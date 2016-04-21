@@ -28,7 +28,7 @@
 function gen() {
 	$ret = (yield 'yield1');
 	var_dump($ret);
-	$ret = (yield 'yield1');
+	$ret = (yield 'yield2');
 	var_dump($ret);
 }
 
