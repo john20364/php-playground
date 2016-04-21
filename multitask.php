@@ -142,13 +142,13 @@ function killTask($tid) {
 //==========================================================
 //	Testing the scheduler
 //==========================================================
-function task($max) {
-	$tid = (yield getTaskId()); // <-- here's the syscall!
-	for ($i = 1; $i <= $max; ++$i) {
-		echo "This is task $tid iteration $i.\n";
-		yield;
-	}
-}
+//function task($max) {
+//	$tid = (yield getTaskId()); // <-- here's the syscall!
+//	for ($i = 1; $i <= $max; ++$i) {
+//		echo "This is task $tid iteration $i.\n";
+//		yield;
+//	}
+//}
 
 //function task1() {
 //	for ($i = 1; $i <= 10; ++$i) {
@@ -164,13 +164,37 @@ function task($max) {
 //	}
 //}
 
+function childTask() {
+	$tid = (yield getTaskId());
+	while (true) {
+		echo "Child task $tid still alive!\n";
+		yield;
+
+	}
+}
+
+function task() {
+	$tid = (yield getTaskId());
+	$childTid = (yield newTask(childTask()));
+
+	for ($i = 1; $i <= 6; ++$i) {
+		echo "Parent task $tid iteration $i.\n";
+		yield;
+
+		if ($i == 3) {
+			yield killTask($childTid);
+		}
+	}
+}
+
 $scheduler = new Scheduler;
 
 //$scheduler->newTask(task1());
 //$scheduler->newTask(task2());
-$scheduler->newTask(task(3));
-$scheduler->newTask(task(11));
+//$scheduler->newTask(task(3));
+//$scheduler->newTask(task(11));
 
+$scheduler->newTask(task());
 $scheduler->run();
 
 
