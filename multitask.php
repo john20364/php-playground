@@ -177,11 +177,11 @@ function task() {
 	$tid = (yield getTaskId());
 	$childTid = (yield newTask(childTask()));
 
-	for ($i = 1; $i <= 6; ++$i) {
+	for ($i = 1; $i <= 10; ++$i) {
 		echo "Parent task $tid iteration $i.\n";
 		yield;
 
-		if ($i == 3) {
+		if ($i == 5) {
 			yield killTask($childTid);
 		}
 	}
